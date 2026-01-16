@@ -6,6 +6,15 @@
  * ----------------------------------------------------------------------------
  */
 /**
+ * ----------------------------------------------------------------------------
+ */
+/**
+ * Array to store console text lines for the scrolling console
+ */
+/**
+ * GLOBAL VARIABLES
+ */
+/**
  * ============================================================================
  */
 /**
@@ -22,12 +31,6 @@
  */
 /**
  * ============================================================================
- */
-/**
- * GLOBAL VARIABLES
- */
-/**
- * ----------------------------------------------------------------------------
  */
 /**
  * ----------------------------------------------------------------------------
@@ -58,9 +61,6 @@
  * MAIN PROGRAM START
  * 
  * ----------------------------------------------------------------------------
- */
-/**
- * Array to store console text lines for the scrolling console
  */
 // B Button: Previous page (with wraparound)
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -189,6 +189,8 @@ function addConsoleLine (text: string) {
 // Draws the scrolling console on the screen
 // Each line is drawn at a specific Y position based on its index
 function drawScrollingConsole () {
+    // Clear old text sprites first to prevent overlapping
+    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     // Clear the screen with a dark background
     // Dark gray/black
     scene.setBackgroundColor(15)
@@ -196,10 +198,11 @@ function drawScrollingConsole () {
     title = textsprite.create("SCROLLING CONSOLE", 0, 1)
     title.setPosition(80, 10)
     // Draw each console line
-    // Start at Y position 20 (below the title)
-    yPos = 20
+    // Start at Y position 25 (below the title)
+    yPos = 25
     for (let line of consoleLines) {
-        lineText = textsprite.create(line, 0, 15)
+        // Yellow text (color 5)
+        lineText = textsprite.create(line, 0, 5)
         lineText.setPosition(80, yPos)
         // Move down for next line
         yPos += LINE_HEIGHT
@@ -211,11 +214,12 @@ function drawScrollingConsole () {
 // Switches to the specified page and renders it
 // @param pageNum The page number to display
 function switchToPage (pageNum: number) {
-    // Clear the screen
+    // Clear the screen completely
     scene.setBackgroundColor(0)
-    // Destroy all existing sprites to clean up
+    // Destroy ALL sprites to clean up (including text sprites)
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
     sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     // Update current page
     currentPage = pageNum
     // Render the appropriate page
@@ -258,7 +262,7 @@ let TOTAL_PAGES = 0
 // Total number of pages
 TOTAL_PAGES = 3
 // Maximum number of lines to display in the scrolling console
-MAX_CONSOLE_LINES = 8
+MAX_CONSOLE_LINES = 7
 // Line height in pixels for text rendering
 LINE_HEIGHT = 12
 // Show welcome splash screen
