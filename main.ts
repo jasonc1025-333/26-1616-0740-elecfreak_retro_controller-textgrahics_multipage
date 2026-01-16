@@ -1,3 +1,12 @@
+// Up Button: Scroll up (pause auto-scroll)
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0) {
+        // Pause auto-scrolling
+        isScrollPaused = 1
+        scrollOffset = Math.max(0, scrollOffset - 1)
+        drawScrollingConsole()
+    }
+})
 // B Button: Previous page (with wraparound)
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     // Go to previous page (wrap around to last page if at first page)
@@ -96,11 +105,37 @@ function runTextDisplayDemo () {
     nav.setPosition(80, 115)
     animation.runImageAnimation(
     mySprite,
-    assets.animation`Shark_Animate`,
+    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
     500,
     false
     )
 }
+// Right Button: Resume auto-scrolling
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0 && isScrollPaused == 1) {
+        // Resume auto-scrolling
+        isScrollPaused = 0
+        scrollOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+        drawScrollingConsole()
+    }
+})
 // Generates a random 5-letter string
 // @returns A random 5-letter uppercase string
 function generateRandomDriver () {
@@ -111,20 +146,35 @@ function generateRandomDriver () {
     return result
 }
 // Adds a new line to the scrolling console
-// If the console is full, the oldest line is removed (scrolling effect)
+// Keeps up to MAX_HISTORY_LINES (50) for scroll-back
 // @param text The text to add to the console
 function addConsoleLine (text: string) {
     // Add the new line to the array
     consoleLines.push(text)
-    // If we have too many lines, remove the oldest one (first element)
-    // This creates the scrolling effect
-    if (consoleLines.length > MAX_CONSOLE_LINES) {
+    // If we have too many lines, remove the oldest one
+    // Keep up to 50 lines for history
+    if (consoleLines.length > MAX_HISTORY_LINES) {
         // Remove first element
         consoleLines.shift()
     }
+    // If not paused, auto-scroll to show latest lines
+    if (isScrollPaused == 0) {
+        scrollOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+    }
 }
+// Down Button: Scroll down (pause auto-scroll)
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0) {
+        // Pause auto-scrolling
+        isScrollPaused = 1
+        maxOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+        scrollOffset = Math.min(maxOffset, scrollOffset + 1)
+        drawScrollingConsole()
+    }
+})
 // Draws the scrolling console on the screen
 // Each line is drawn at a specific Y position based on its index
+// Draw instructions at the bottom
 function drawScrollingConsole () {
     // Clear old text sprites first to prevent overlapping
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
@@ -134,18 +184,24 @@ function drawScrollingConsole () {
     // Draw title at the top using arcade-text extension
     title = textsprite.create("SCROLLING CONSOLE", 0, 1)
     title.setPosition(80, 10)
-    // Draw each console line
+    // Draw each console line based on scroll offset
     // Start at Y position 25 (below the title)
     yPos = 25
-    for (let line of consoleLines) {
-        // Light-Blue text (color 6)
+    let linesToShow = consoleLines.slice(scrollOffset, scrollOffset + MAX_CONSOLE_LINES)
+for (let line of linesToShow) {
+        // Yellow text (color 5)
         lineText = textsprite.create(line, 0, 5)
         lineText.setPosition(80, yPos)
         // Move down for next line
         yPos += LINE_HEIGHT
     }
-    // Draw instructions at the bottom
-    instructions = textsprite.create("A:Next B:Prev", 0, 9)
+    if (isScrollPaused == 1) {
+        navText = "Up/Dn:Scroll Right:Resume"
+    } else {
+        navText = "Up/Dn:Pause A:Next"
+    }
+    // Bright green text (color 7)
+    instructions = textsprite.create(navText, 0, 7)
     instructions.setPosition(80, 110)
 }
 // Switches to the specified page and renders it
@@ -173,9 +229,11 @@ function switchToPage (pageNum: number) {
 }
 let botId = 0
 let instructions: TextSprite = null
+let navText = ""
 let lineText: TextSprite = null
 let yPos = 0
 let title: TextSprite = null
+let maxOffset = 0
 let result = ""
 let letters = ""
 let nav: TextSprite = null
@@ -193,16 +251,21 @@ let mySprite: Sprite = null
 let title3: TextSprite = null
 let nextPage = 0
 let lineCounter = 0
-let consoleLines: string[] = []
-let currentPage = 0
 let prevPage = 0
+let isScrollPaused = 0
+let currentPage = 0
 let LINE_HEIGHT = 0
-let MAX_CONSOLE_LINES = 0
+let MAX_HISTORY_LINES = 0
 let TOTAL_PAGES = 0
+let scrollOffset = 0
+let MAX_CONSOLE_LINES = 0
+let consoleLines: string[] = []
 // Total number of pages
 TOTAL_PAGES = 3
 // Maximum number of lines to display in the scrolling console
 MAX_CONSOLE_LINES = 7
+// Maximum history to keep (50 lines)
+MAX_HISTORY_LINES = 50
 // Line height in pixels for text rendering
 LINE_HEIGHT = 12
 // Show welcome splash screen
