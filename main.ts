@@ -201,8 +201,8 @@ function drawScrollingConsole () {
     // Start at Y position 25 (below the title)
     yPos = 25
     for (let line of consoleLines) {
-        // Yellow text (color 5)
-        lineText = textsprite.create(line, 0, 5)
+        // Light-Blue text (color 6)
+        lineText = textsprite.create(line, 0, 6)
         lineText.setPosition(80, yPos)
         // Move down for next line
         yPos += LINE_HEIGHT
