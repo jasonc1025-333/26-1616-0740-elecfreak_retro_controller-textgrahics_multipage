@@ -1,67 +1,3 @@
-/**
- * ----------------------------------------------------------------------------
- * 
- * ANIMATED SPRITES DEMO (Page 3)
- * 
- * ----------------------------------------------------------------------------
- */
-/**
- * ----------------------------------------------------------------------------
- */
-/**
- * Array to store console text lines for the scrolling console
- */
-/**
- * GLOBAL VARIABLES
- */
-/**
- * ============================================================================
- */
-/**
- * RETRO ARCADE TEXT DEMO
- */
-/**
- * ============================================================================
- */
-/**
- * This project demonstrates text display and scrolling console for micro:bit
- */
-/**
- * Retro Arcade. Navigate between pages using A (next) and B (previous) buttons.
- */
-/**
- * ============================================================================
- */
-/**
- * ----------------------------------------------------------------------------
- */
-/**
- * Current page number (0 = scrolling console, 1 = text display methods, 2 = animated sprites)
- */
-/**
- * Counter for demo purposes (adds new lines to console)
- */
-/**
- * ----------------------------------------------------------------------------
- * 
- * PAGE NAVIGATION
- * 
- * ----------------------------------------------------------------------------
- */
-/**
- * ----------------------------------------------------------------------------
- * 
- * BUTTON CONTROLS
- * 
- * ----------------------------------------------------------------------------
- */
-/**
- * ----------------------------------------------------------------------------
- * 
- * MAIN PROGRAM START
- * 
- * ----------------------------------------------------------------------------
- */
 // B Button: Previous page (with wraparound)
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     // Go to previous page (wrap around to last page if at first page)
@@ -105,13 +41,7 @@ function runAnimatedSpritesDemo () {
     title3 = textsprite.create("ANIMATED SPRITES", 0, 1)
     title3.setPosition(80, 10)
     // Create a sprite with a simple image (a red square)
-    mySprite = sprites.create(img`
-        2 2 2 2 2 
-        2 2 2 2 2 
-        2 2 2 2 2 
-        2 2 2 2 2 
-        2 2 2 2 2 
-        `, SpriteKind.Player)
+    mySprite = sprites.create(assets.image`Square_Red`, SpriteKind.Player)
     // Position the sprite in the center
     mySprite.setPosition(80, 60)
     // Set velocity to make it move (pixels per frame)
@@ -122,21 +52,13 @@ function runAnimatedSpritesDemo () {
     // Make sprite bounce off walls
     mySprite.setFlag(SpriteFlag.BounceOnWall, true)
     // Create a second sprite (blue circle)
-    sprite2 = sprites.create(img`
-        . . 8 8 8 . . 
-        . 8 8 8 8 8 . 
-        8 8 8 8 8 8 8 
-        8 8 8 8 8 8 8 
-        8 8 8 8 8 8 8 
-        . 8 8 8 8 8 . 
-        . . 8 8 8 . . 
-        `, SpriteKind.Enemy)
-    sprite2.setPosition(40, 80)
+    enemySprite_01 = sprites.create(assets.image`Circle_Blue`, SpriteKind.Enemy)
+    enemySprite_01.setPosition(40, 80)
     // Move left
-    sprite2.vx = -25
+    enemySprite_01.vx = -25
     // Move up
-    sprite2.vy = -15
-    sprite2.setFlag(SpriteFlag.BounceOnWall, true)
+    enemySprite_01.vy = -15
+    enemySprite_01.setFlag(SpriteFlag.BounceOnWall, true)
     // Display info text using textsprite
     info1 = textsprite.create("Sprites bouncing!", 0, 15)
     info1.setPosition(80, 25)
@@ -172,6 +94,21 @@ function runTextDisplayDemo () {
     // Draw navigation
     nav = textsprite.create("B:Back", 0, 5)
     nav.setPosition(80, 115)
+    animation.runImageAnimation(
+    mySprite,
+    assets.animation`Shark_Animate`,
+    500,
+    false
+    )
+}
+// Generates a random 5-letter string
+// @returns A random 5-letter uppercase string
+function generateRandomDriver () {
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    for (let index = 0; index < 5; index++) {
+        result = "" + result + letters.charAt(Math.floor(Math.random() * letters.length))
+    }
+    return result
 }
 // Adds a new line to the scrolling console
 // If the console is full, the oldest line is removed (scrolling effect)
@@ -202,13 +139,13 @@ function drawScrollingConsole () {
     yPos = 25
     for (let line of consoleLines) {
         // Light-Blue text (color 6)
-        lineText = textsprite.create(line, 0, 6)
+        lineText = textsprite.create(line, 0, 5)
         lineText.setPosition(80, yPos)
         // Move down for next line
         yPos += LINE_HEIGHT
     }
     // Draw instructions at the bottom
-    instructions = textsprite.create("A:Next B:Prev", 0, 5)
+    instructions = textsprite.create("A:Next B:Prev", 0, 9)
     instructions.setPosition(80, 110)
 }
 // Switches to the specified page and renders it
@@ -234,10 +171,13 @@ function switchToPage (pageNum: number) {
         runAnimatedSpritesDemo()
     }
 }
+let botId = 0
 let instructions: TextSprite = null
 let lineText: TextSprite = null
 let yPos = 0
 let title: TextSprite = null
+let result = ""
+let letters = ""
 let nav: TextSprite = null
 let instructions2: TextSprite = null
 let desc2: TextSprite = null
@@ -248,7 +188,7 @@ let title2: TextSprite = null
 let nav2: TextSprite = null
 let info2: TextSprite = null
 let info1: TextSprite = null
-let sprite2: Sprite = null
+let enemySprite_01: Sprite = null
 let mySprite: Sprite = null
 let title3: TextSprite = null
 let nextPage = 0
@@ -276,7 +216,12 @@ game.onUpdateInterval(2000, function () {
     // Only add lines if we're on the console page
     if (currentPage == 0) {
         lineCounter += 1
-        addConsoleLine("Line " + lineCounter)
+        // // jwc 26-0116-1300 - Original simple line format
+        // // addConsoleLine("Line " + lineCounter)
+        // New format: "%d | BotId: %d | Student_%d"
+        // Random number 11-50
+        botId = Math.floor(Math.random() * 40) + 11
+        addConsoleLine("" + lineCounter + "|BotId:" + botId + "|Student_" + botId)
         drawScrollingConsole()
     }
 })
