@@ -1,0 +1,19 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><variables><variable type="KIND_SpriteKind" id="(,MhlW15049|,rZBJapL">Player</variable><variable type="KIND_SpriteKind" id="#^uG#BftYCjj)9K(Pm9C">Projectile</variable><variable type="KIND_SpriteKind" id="{XG{Vaqrh7XB%%F#r?1$">Food</variable><variable type="KIND_SpriteKind" id="47qd]$AOk|DWgd;~-JG%">Enemy</variable><variable id="D10P}Wer:Y5fg4c/ht)C">consoleLines</variable><variable id="ctoU(OAr.$Qvt9V?h;=?">MAX_CONSOLE_LINES</variable><variable id="_vg!B2qpCrJ;iuCppQ(I">yPos</variable><variable id="@;uj}y[8:`f[QPUDTg_0">line</variable><variable id="M0XOP[{DnsT].pa)jsbF">LINE_HEIGHT</variable><variable id="e=hH)/o-qud!#x?XOEVO">lineCounter</variable><variable id="ow2G2+c0%@|M09]G;VJQ">mySprite</variable><variable id="IDLo?$W!Iy}p$T.FKPM7">sprite2</variable><variable id=".}Z#)0NLK$/4#`bI~W}Z">currentPage</variable><variable id="f|_/Af;jj6gBd3_}6^4/">nextPage</variable><variable id="`wlr~E+/#M~Fe2*`,=X8">TOTAL_PAGES</variable><variable id="J@maZ,q?=w{+w5_NV[B1">prevPage</variable></variables><comment id="cnAz3kxXC2!XMGJ2;C%1" x="0" y="1468" w="480" h="120">
+----------------------------------------------------------------------------
+ANIMATED SPRITES DEMO (Page 3)
+----------------------------------------------------------------------------
+</comment><comment id="IY65W3PF1OXp0cpk5!yR" x="525" y="1468" w="480" h="120">
+----------------------------------------------------------------------------
+PAGE NAVIGATION
+----------------------------------------------------------------------------
+</comment><comment id="3H0UxxJhJdHB5z^L9fp0" x="1050" y="1468" w="480" h="120">
+----------------------------------------------------------------------------
+BUTTON CONTROLS
+----------------------------------------------------------------------------
+</comment><comment id="y:T|v%([*9ucEyJFl77e" x="1575" y="1468" w="480" h="120">
+----------------------------------------------------------------------------
+MAIN PROGRAM START
+----------------------------------------------------------------------------
+</comment><comment id="}:[k-omc7RbaVe]#M^Lm" x="2100" y="1468" w="480" h="120">
+Array to store console text lines for the scrolling console
+</comment></xml>
