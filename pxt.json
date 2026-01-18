@@ -1,6 +1,6 @@
 {
     "name": "26-1616-0740-Elecfreak_Retro_Controller-Test_TextAndGrahics_MultiPage",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "",
     "dependencies": {
         "device": "*",
