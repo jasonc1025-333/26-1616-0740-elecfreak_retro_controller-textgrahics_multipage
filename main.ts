@@ -1,67 +1,40 @@
 /**
- * ----------------------------------------------------------------------------
+ * // jwc 26-0116-1300 - Removed hold-down scrolling (was causing white page on navigation)
  * 
- * ANIMATED SPRITES DEMO (Page 3)
+ * // game.onUpdateInterval(150, function() {
  * 
- * ----------------------------------------------------------------------------
- */
-/**
- * ----------------------------------------------------------------------------
- */
-/**
- * Array to store console text lines for the scrolling console
- */
-/**
- * GLOBAL VARIABLES
- */
-/**
- * ============================================================================
- */
-/**
- * RETRO ARCADE TEXT DEMO
- */
-/**
- * ============================================================================
- */
-/**
- * This project demonstrates text display and scrolling console for micro:bit
- */
-/**
- * Retro Arcade. Navigate between pages using A (next) and B (previous) buttons.
- */
-/**
- * ============================================================================
- */
-/**
- * ----------------------------------------------------------------------------
- */
-/**
- * Current page number (0 = scrolling console, 1 = text display methods, 2 = animated sprites)
- */
-/**
- * Counter for demo purposes (adds new lines to console)
- */
-/**
- * ----------------------------------------------------------------------------
+ * //     if (currentPage == 0) {
  * 
- * PAGE NAVIGATION
+ * //         if (controller.up.isPressed()) {
  * 
- * ----------------------------------------------------------------------------
+ * //             isScrollPaused = 1
+ * 
+ * //             scrollOffset = Math.max(0, scrollOffset - 1)
+ * 
+ * //             drawScrollingConsole()
+ * 
+ * //         }
+ * 
+ * //         if (controller.down.isPressed()) {
+ * 
+ * //             isScrollPaused = 1
+ * 
+ * //             let maxOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+ * 
+ * //             scrollOffset = Math.min(maxOffset, scrollOffset + 1)
+ * 
+ * //             drawScrollingConsole()
  */
-/**
- * ----------------------------------------------------------------------------
- * 
- * BUTTON CONTROLS
- * 
- * ----------------------------------------------------------------------------
- */
-/**
- * ----------------------------------------------------------------------------
- * 
- * MAIN PROGRAM START
- * 
- * ----------------------------------------------------------------------------
- */
+// Up Button: Scroll up (pause auto-scroll)
+// Single press = single scroll (reliable, no page navigation issues)
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0) {
+        // Pause auto-scrolling
+        isScrollPaused = 1
+        scrollOffset = Math.max(0, scrollOffset - 1)
+        drawScrollingConsole()
+    }
+})
 // B Button: Previous page (with wraparound)
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     // Go to previous page (wrap around to last page if at first page)
@@ -70,7 +43,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 // Runs the scrolling console demo
 // Automatically adds new lines every 2 seconds
-function runScrollingConsole() {
+function runScrollingConsole () {
     // Clear any existing console lines
     consoleLines = []
     lineCounter = 0
@@ -97,7 +70,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 // Demonstrates animated sprites moving around the screen
-function runAnimatedSpritesDemo() {
+function runAnimatedSpritesDemo () {
     // Clear the screen with a green background
     // Green
     scene.setBackgroundColor(7)
@@ -106,12 +79,12 @@ function runAnimatedSpritesDemo() {
     title3.setPosition(80, 10)
     // Create a sprite with a simple image (a red square)
     mySprite = sprites.create(img`
-        2 2 2 2 2
-        2 2 2 2 2
-        2 2 2 2 2
-        2 2 2 2 2
-        2 2 2 2 2
-    `, SpriteKind.Player)
+        2 2 2 2 2 
+        2 2 2 2 2 
+        2 2 2 2 2 
+        2 2 2 2 2 
+        2 2 2 2 2 
+        `, SpriteKind.Player)
     // Position the sprite in the center
     mySprite.setPosition(80, 60)
     // Set velocity to make it move (pixels per frame)
@@ -123,14 +96,14 @@ function runAnimatedSpritesDemo() {
     mySprite.setFlag(SpriteFlag.BounceOnWall, true)
     // Create a second sprite (blue circle)
     enemySprite_01 = sprites.create(img`
-        . . 8 8 8 . .
-        . 8 8 8 8 8 .
-        8 8 8 8 8 8 8
-        8 8 8 8 8 8 8
-        8 8 8 8 8 8 8
-        . 8 8 8 8 8 .
-        . . 8 8 8 . .
-    `, SpriteKind.Enemy)
+        . . 8 8 8 . . 
+        . 8 8 8 8 8 . 
+        8 8 8 8 8 8 8 
+        8 8 8 8 8 8 8 
+        8 8 8 8 8 8 8 
+        . 8 8 8 8 8 . 
+        . . 8 8 8 . . 
+        `, SpriteKind.Enemy)
     enemySprite_01.setPosition(40, 80)
     // Move left
     enemySprite_01.vx = -25
@@ -147,7 +120,14 @@ function runAnimatedSpritesDemo() {
     nav2.setPosition(80, 115)
 }
 // Demonstrates different text display methods in MakeCode Arcade
-function runTextDisplayDemo() {
+// // jwc 26-0116-1300 - Removed animation (mySprite doesn't exist on this page)
+// // animation.runImageAnimation(
+// //     mySprite,
+// //     assets.animation`Shark_Animate`,
+// //     500,
+// //     false
+// // )
+function runTextDisplayDemo () {
     // Clear the screen with a blue background
     // Light blue
     scene.setBackgroundColor(8)
@@ -172,18 +152,29 @@ function runTextDisplayDemo() {
     // Draw navigation
     nav = textsprite.create("B:Back", 0, 5)
     nav.setPosition(80, 115)
-    //// jwc 26-0116-1300 - Removed animation (mySprite doesn't exist on this page)
-    //// animation.runImageAnimation(
-    ////     mySprite,
-    ////     assets.animation`Shark_Animate`,
-    ////     500,
-    ////     false
-    //// )
+}
+// Right Button: Resume auto-scrolling
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0 && isScrollPaused == 1) {
+        // Resume auto-scrolling
+        isScrollPaused = 0
+        scrollOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+        drawScrollingConsole()
+    }
+})
+// Generates a random 5-letter string
+// @returns A random 5-letter uppercase string
+function generateRandomDriver () {
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    for (let index = 0; index < 5; index++) {
+        result = "" + result + letters.charAt(Math.floor(Math.random() * letters.length))
+    }
+    return result
 }
 // Adds a new line to the scrolling console
 // Keeps up to MAX_HISTORY_LINES (50) for scroll-back
 // @param text The text to add to the console
-function addConsoleLine(text: string) {
+function addConsoleLine (text: string) {
     // Add the new line to the array
     consoleLines.push(text)
     // If we have too many lines, remove the oldest one
@@ -197,9 +188,21 @@ function addConsoleLine(text: string) {
         scrollOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
     }
 }
+// Down Button: Scroll down (pause auto-scroll)
+// Single press = single scroll (reliable, no page navigation issues)
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0) {
+        // Pause auto-scrolling
+        isScrollPaused = 1
+        maxOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
+        scrollOffset = Math.min(maxOffset, scrollOffset + 1)
+        drawScrollingConsole()
+    }
+})
 // Draws the scrolling console on the screen
 // Each line is drawn at a specific Y position based on its index
-function drawScrollingConsole() {
+// Draw instructions at the bottom
+function drawScrollingConsole () {
     // Clear old text sprites first to prevent overlapping
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     // Clear the screen with a dark background
@@ -211,17 +214,14 @@ function drawScrollingConsole() {
     // Draw each console line based on scroll offset
     // Start at Y position 25 (below the title)
     yPos = 25
-    // Use array.slice() to get the visible lines
     let linesToShow = consoleLines.slice(scrollOffset, scrollOffset + MAX_CONSOLE_LINES)
-    for (let line of linesToShow) {
+for (let line of linesToShow) {
         // Yellow text (color 5)
         lineText = textsprite.create(line, 0, 5)
         lineText.setPosition(80, yPos)
         // Move down for next line
         yPos += LINE_HEIGHT
     }
-    // Draw instructions at the bottom
-    let navText = ""
     if (isScrollPaused == 1) {
         navText = "Up/Dn:Scroll Right:Resume"
     } else {
@@ -233,7 +233,7 @@ function drawScrollingConsole() {
 }
 // Switches to the specified page and renders it
 // @param pageNum The page number to display
-function switchToPage(pageNum: number) {
+function switchToPage (pageNum: number) {
     // Clear the screen completely
     scene.setBackgroundColor(0)
     // Destroy ALL sprites to clean up (including text sprites)
@@ -254,10 +254,15 @@ function switchToPage(pageNum: number) {
         runAnimatedSpritesDemo()
     }
 }
+let botId = 0
 let instructions: TextSprite = null
+let navText = ""
 let lineText: TextSprite = null
 let yPos = 0
 let title: TextSprite = null
+let maxOffset = 0
+let result = ""
+let letters = ""
 let nav: TextSprite = null
 let instructions2: TextSprite = null
 let desc2: TextSprite = null
@@ -273,15 +278,15 @@ let mySprite: Sprite = null
 let title3: TextSprite = null
 let nextPage = 0
 let lineCounter = 0
-let consoleLines: string[] = []
-let currentPage = 0
 let prevPage = 0
-let LINE_HEIGHT = 0
-let MAX_CONSOLE_LINES = 0
-let MAX_HISTORY_LINES = 0
-let scrollOffset = 0
 let isScrollPaused = 0
+let currentPage = 0
+let LINE_HEIGHT = 0
+let MAX_HISTORY_LINES = 0
 let TOTAL_PAGES = 0
+let consoleLines: string[] = []
+let MAX_CONSOLE_LINES = 0
+let scrollOffset = 0
 // Total number of pages
 TOTAL_PAGES = 3
 // Maximum number of lines to display in the scrolling console
@@ -295,78 +300,18 @@ game.splash("Retro Arcade", "Text Demo")
 game.splash("Use A and B buttons", "to navigate pages")
 // Start on the first page (scrolling console)
 switchToPage(0)
-/**
- * Generates a random 5-letter string
- * @returns A random 5-letter uppercase string
- */
-function generateRandomDriver(): string {
-    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let result = ""
-    for (let i = 0; i < 5; i++) {
-        result += letters.charAt(Math.floor(Math.random() * letters.length))
-    }
-    return result
-}
-
-//// jwc 26-0116-1300 - Removed hold-down scrolling (was causing white page on navigation)
-//// game.onUpdateInterval(150, function() {
-////     if (currentPage == 0) {
-////         if (controller.up.isPressed()) {
-////             isScrollPaused = 1
-////             scrollOffset = Math.max(0, scrollOffset - 1)
-////             drawScrollingConsole()
-////         }
-////         if (controller.down.isPressed()) {
-////             isScrollPaused = 1
-////             let maxOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
-////             scrollOffset = Math.min(maxOffset, scrollOffset + 1)
-////             drawScrollingConsole()
-////         }
-////     }
-//// })
-
-// Up Button: Scroll up (pause auto-scroll)
-// Single press = single scroll (reliable, no page navigation issues)
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (currentPage == 0) {
-        isScrollPaused = 1  // Pause auto-scrolling
-        scrollOffset = Math.max(0, scrollOffset - 1)
-        drawScrollingConsole()
-    }
-})
-
-// Down Button: Scroll down (pause auto-scroll)
-// Single press = single scroll (reliable, no page navigation issues)
-controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (currentPage == 0) {
-        isScrollPaused = 1  // Pause auto-scrolling
-        let maxOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
-        scrollOffset = Math.min(maxOffset, scrollOffset + 1)
-        drawScrollingConsole()
-    }
-})
-
-// Right Button: Resume auto-scrolling
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (currentPage == 0 && isScrollPaused == 1) {
-        isScrollPaused = 0  // Resume auto-scrolling
-        scrollOffset = Math.max(0, consoleLines.length - MAX_CONSOLE_LINES)
-        drawScrollingConsole()
-    }
-})
-
 // Set up a timer to add new lines every 2 seconds (outside the function)
 // This demonstrates the scrolling effect
 game.onUpdateInterval(2000, function () {
     // Only add lines if we're on the console page
     if (currentPage == 0) {
         lineCounter += 1
-        //// jwc 26-0116-1300 - Original simple line format
-        //// addConsoleLine("Line " + lineCounter)
-
+        // // jwc 26-0116-1300 - Original simple line format
+        // // addConsoleLine("Line " + lineCounter)
         // New format: "%d | BotId: %d | Student_%d"
-        let botId = Math.floor(Math.random() * 40) + 11  // Random number 11-50
-        addConsoleLine(lineCounter + "|BotId:" + botId + "|Student_" + botId)
+        // Random number 11-50
+        botId = Math.floor(Math.random() * 40) + 11
+        addConsoleLine("" + lineCounter + "|BotId:" + botId + "|Student_" + botId)
         drawScrollingConsole()
     }
 })
